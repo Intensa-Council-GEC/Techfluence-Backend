@@ -13,7 +13,7 @@ class send_contact_email(threading.Thread):
         threading.Thread.__init__(self)
     def run(self):
         try:
-            html_template = 'contact.html'
+            html_template = 'email/contact.html'
             html_message = render_to_string(html_template, context)
             subject = 'Thanks for filling up Contact Us form.'
             email_from = settings.EMAIL_HOST_USER

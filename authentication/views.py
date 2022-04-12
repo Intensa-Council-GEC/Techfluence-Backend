@@ -28,6 +28,8 @@ def addOrganisers(request):
                     )
                 pw = get_random_string(8)
                 org.set_password(pw)
+                thread_obj = send_organisers_mail(str(i[1]).lower(), pw)
+                thread_obj.start()
                 org.save()
             return Response({"message":"Organisers Added"}, status=status.HTTP_201_CREATED)
         return Response({"error":ser.errors}, status=status.HTTP_400_BAD_REQUEST)
