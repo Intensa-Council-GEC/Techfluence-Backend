@@ -9,4 +9,6 @@ urlpatterns = [
 	path('organisers-forgot/', views.organiser_forgot, name="organisers-forgot"),
 	path('organisers-reset/', views.organiser_reset, name="organisers-login"),
 
+	path('get-colleges/', views.GetColleges.as_view(), name="get-colleges"),
+	
 ]

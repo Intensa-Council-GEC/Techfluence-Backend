@@ -3,5 +3,8 @@ from .models import *
 
 
 admin.site.register(ContactUsModel)
-# admin.site.register(EventModel)
-# admin.site.register(RulesModel)
+admin.site.register(SoloEventModel)
+admin.site.register(TeamEventModel)
+
+
+admin.site.register(SoloParticipation)

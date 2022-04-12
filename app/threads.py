@@ -39,3 +39,21 @@ class send_special_email(threading.Thread):
         except Exception as e:
             print(e)
 
+
+class send_solo_participation_acknowledgement(threading.Thread):
+    def __init__(self, email, event):
+        self.email = email
+        self.event = event
+        threading.Thread.__init__(self)
+    def run(self):
+        try:
+            html_template = 'email/participation.html'
+            context["event"] = str(self.event)
+            html_message = render_to_string(html_template, context)
+            subject = f'You have evrolled for {self.event} event'
+            email_from = settings.EMAIL_HOST_USER
+            msg = EmailMessage(subject, html_message, email_from, [self.email])
+            msg.content_subtype = 'html'
+            msg.send()
+        except Exception as e:
+            print(e)

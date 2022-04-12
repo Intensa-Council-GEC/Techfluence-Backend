@@ -26,6 +26,12 @@ class otpSerializer(serializers.Serializer):
         validate_pw(data["pw"])
         return data
 
+class CollegesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CollegeModel
+        exclude = ["created_at", "updated_at"]
+
+
 
 class emailSerializer(serializers.Serializer):
     email = serializers.EmailField(required = True)

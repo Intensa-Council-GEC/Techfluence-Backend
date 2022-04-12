@@ -1,4 +1,5 @@
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.generics import ListAPIView
 from django.contrib.auth import authenticate
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -104,3 +105,7 @@ def organiser_reset(request):
         print(e)
         return Response({"error":str(e), "message":"Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+
+class GetColleges(ListAPIView):
+    queryset = CollegeModel.objects.all()
+    serializer_class = CollegesSerializer

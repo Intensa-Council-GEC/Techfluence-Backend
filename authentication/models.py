@@ -1,5 +1,4 @@
 from django.db import models
-from django.forms import FileField
 from base.models import *
 from .validators import *
 
@@ -12,9 +11,10 @@ class OrganisersModel(BaseUser):
 
 
 class CollegeModel(BaseModel):
-    college_name = models.CharField(max_length=50)
+    short_form = models.CharField(max_length=50)
+    complete_name = models.CharField(max_length=50)
     def __str__(self):
-        return self.college_name
+        return self.short_form
 
 
 class AddOrganiserModel(BaseModel):
