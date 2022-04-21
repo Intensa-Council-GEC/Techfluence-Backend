@@ -50,17 +50,17 @@ def soloEventRegistration(request, event_id):
             if not CollegeModel.objects.filter(id=ser.data["college"]).first():
                 return Response({"message":"Invalid College ID"}, status=status.HTTP_404_NOT_FOUND)
             col = CollegeModel.objects.get(id=ser.data["college"])
-            name = ser.data["name"]
             email = ser.data["email"]
-            phone = ser.data["phone"]
-            user_obj, _ = ParticipantsModel.objects.get_or_create(email = email,
-                name = name,
-                phone = phone, 
-                college = col)
-            participation = SoloParticipation.objects.get_or_create(participant=user_obj, event=event)
+            user_obj, _ = ParticipantsModel.objects.get_or_create(
+                email = email,
+                name = ser.data["name"],
+                phone = ser.data["phone"], 
+                college = col
+            )
+            participation, _ = SoloParticipation.objects.get_or_create(participant=user_obj, event=event)
             thread_obj = send_solo_participation_acknowledgement(email, event.title)
             thread_obj.start()
-            # participation.save()
+            participation.save()
             return Response({"message":"user added to participants"}, status=status.HTTP_200_OK)
         return Response({"error":ser.errors}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
@@ -71,13 +71,47 @@ def soloEventRegistration(request, event_id):
 @api_view(["POST"])
 def teamEventRegistration(request, event_id):
     try:
-        event = EventModel.objects.get(id = event_id)
+        event = TeamEventModel.objects.get(id = event_id)
         if not event:
             return Response({"message":"Invalid Event ID"}, status=status.HTTP_406_NOT_ACCEPTABLE)
-        if event.is_team_even == True:
-            return Response({"message":"This is a team event. Solo Participation Not Allowed"}, status=status.HTTP_406_NOT_ACCEPTABLE)
-        # ser = TeamEventRegistration(data=request.data)
-        # return Response({"error":ser.errors}, status=status.HTTP_400_BAD_REQUEST)
+        ser = TeamEventRegistration(data=request.data)
+        if ser.is_valid():
+            team_username = ser.data["team_username"]
+            if TeamModel.objects.filter(team_username=team_username).exists():
+                return Response({"message":"This username is taken. Use some other username"}, status=status.HTTP_409_CONFLICT)
+            if not CollegeModel.objects.filter(id=ser.data["college"]).first():
+                return Response({"message":"Invalid College ID"}, status=status.HTTP_404_NOT_FOUND)
+            col = CollegeModel.objects.get(id=ser.data["college"])
+            leader_obj, _ = ParticipantsModel.objects.get_or_create(
+                email = ser.data["leader_email"],
+                name = ser.data["leader_name"],
+                phone = ser.data["leader_phone"], 
+                college = col
+            )
+            leader_obj.save()
+            team = TeamModel.objects.create(
+                name = ser.data["team_name"],
+                team_username = team_username,
+                leader = leader_obj
+            )
+            for i in range(1, event.team_size):
+                participant_obj, _ = ParticipantsModel.objects.get_or_create(
+                    email = ser.data[f"memer_{i}_email"],
+                    name = ser.data[f"memer_{i}_name"],
+                    phone = ser.data[f"memer_{i}_phone"], 
+                    college = col
+                )
+                team.members.add(participant_obj)
+                participant_obj.save()
+            team.save()
+            participation, _ = TeamParticipation.objects.get_or_create(team=team, event=event)
+            email_list = list(team.members.all().values_list("email", flat=True))
+            email_list.append(str(team.leader.email))
+            thread_obj = send_team_participation_acknowledgement(email_list, event.title)
+            thread_obj.start()
+            participation.save()
+            return Response({"message":"Team added to participants"}, status=status.HTTP_200_OK)
+        return Response({"error":ser.errors}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return Response({"error":str(e), "message":"Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

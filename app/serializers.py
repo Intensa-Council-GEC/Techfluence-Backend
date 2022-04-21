@@ -73,5 +73,31 @@ class SoloEventRegistration(serializers.Serializer):
     email = serializers.EmailField(required = True)
 
 
-# class TeamEventRegistration(serializers.Serializer):
-    # team_name = 
+class TeamEventRegistration(serializers.Serializer):
+    team_name = serializers.CharField(required = True)
+    team_username = serializers.CharField(required = True)
+    leader_name = serializers.CharField(required = True)
+    leader_email = serializers.EmailField(required = True)
+    leader_phone = serializers.IntegerField(required = True)
+    college = serializers.CharField(required = True)
+    memer_1_name = serializers.CharField(required = True)
+    memer_1_email = serializers.EmailField(required = True)
+    memer_1_phone = serializers.IntegerField(required = True)
+    memer_2_name = serializers.CharField(required = False)
+    memer_2_email = serializers.EmailField(required = False)
+    memer_2_phone = serializers.IntegerField(required = False)
+    memer_3_name = serializers.CharField(required = False)
+    memer_3_email = serializers.EmailField(required = False)
+    memer_3_phone = serializers.IntegerField(required = False)
+    memer_4_name = serializers.CharField(required = False)
+    memer_4_email = serializers.EmailField(required = False)
+    memer_4_phone = serializers.IntegerField(required = False)
+    memer_5_name = serializers.CharField(required = False)
+    memer_5_email = serializers.EmailField(required = False)
+    memer_5_phone = serializers.IntegerField(required = False)
+    memer_6_name = serializers.CharField(required = False)
+    memer_6_email = serializers.EmailField(required = False)
+    memer_6_phone = serializers.IntegerField(required = False)
+    memer_7_name = serializers.CharField(required = False)
+    memer_7_email = serializers.EmailField(required = False)
+    memer_7_phone = serializers.IntegerField(required = False)

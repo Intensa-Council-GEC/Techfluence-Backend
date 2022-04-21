@@ -109,3 +109,4 @@ def organiser_reset(request):
 class GetColleges(ListAPIView):
     queryset = CollegeModel.objects.all()
     serializer_class = CollegesSerializer
+

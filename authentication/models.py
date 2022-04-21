@@ -32,7 +32,6 @@ class ParticipantsModel(BaseUser):
 class TeamModel(BaseModel):
     name = models.CharField(max_length=50)
     team_username = models.CharField(max_length=50, unique=True)
-    size = models.PositiveSmallIntegerField()
     leader = models.ForeignKey(ParticipantsModel, related_name="team_leader", on_delete=models.CASCADE)
     members = models.ManyToManyField(ParticipantsModel)
     def __str__(self):

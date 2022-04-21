@@ -8,3 +8,4 @@ admin.site.register(TeamEventModel)
 
 
 admin.site.register(SoloParticipation)
+admin.site.register(TeamParticipation)

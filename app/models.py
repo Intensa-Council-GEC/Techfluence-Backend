@@ -3,8 +3,9 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.forms import BooleanField
 from base.models import *
-from .threads import *
 from authentication.models import *
+from .validators import validate_team_size
+from .threads import *
 
 
 class ContactUsModel(BaseModel):
@@ -33,7 +34,7 @@ class SoloEventModel(EventModel):
 
 
 class TeamEventModel(EventModel):
-    team_size = models.PositiveSmallIntegerField()
+    team_size = models.PositiveSmallIntegerField(validators=[validate_team_size])
     def __str__(self):
         return self.title
 

@@ -47,3 +47,10 @@ class GetOrganiserDetailsSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrganisersModel
         fields = ["name", "phone", "photo"]
+
+
+class AddTeamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TeamModel
+        fields = "__all__"
+
