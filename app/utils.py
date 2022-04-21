@@ -1,6 +1,16 @@
 from PIL import Image, ImageDraw, ImageFont
 from django.conf import settings
 import uuid
+from authentication.models import ParticipantsModel
+
+
+def checkUser(email):
+    try:
+        if ParticipantsModel.objects.filter(email=email).exists():
+            return True
+        return False
+    except Exception as e:
+        print(e)
 
 names = ["Atharv Parkhe", "Abhinav Borde", "Sairaj Rasam"]
 

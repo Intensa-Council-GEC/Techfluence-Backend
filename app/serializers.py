@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from authentication.serializers import GetOrganiserDetailsSerializer
+from authentication.serializers import *
 from .models import *
 
 
@@ -101,3 +101,17 @@ class TeamEventRegistration(serializers.Serializer):
     memer_7_name = serializers.CharField(required = False)
     memer_7_email = serializers.EmailField(required = False)
     memer_7_phone = serializers.IntegerField(required = False)
+
+
+class SoloEventParticipantsListSerializer(serializers.ModelSerializer):
+    participant = ParticipantDisplaySerilaizer()
+    class Meta:
+        model = SoloParticipation
+        fields = ["participant"]
+
+
+class TeamEventParticipantsListSerializer(serializers.ModelSerializer):
+    team = TeamDisplaySerilizer()
+    class Meta:
+        model = TeamParticipation
+        fields = ["team"]

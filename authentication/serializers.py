@@ -54,3 +54,16 @@ class AddTeamSerializer(serializers.ModelSerializer):
         model = TeamModel
         fields = "__all__"
 
+
+class ParticipantDisplaySerilaizer(serializers.ModelSerializer):
+    class Meta:
+        model = ParticipantsModel
+        fields = ["name", "email", "phone"]
+
+
+class TeamDisplaySerilizer(serializers.ModelSerializer):
+    leader = ParticipantDisplaySerilaizer()
+    members = ParticipantDisplaySerilaizer(read_only=True, many=True)
+    class Meta:
+        model = TeamModel
+        fields = ["leader", "name", "team_username", "members"]
