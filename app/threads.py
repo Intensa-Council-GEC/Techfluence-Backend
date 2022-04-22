@@ -1,7 +1,7 @@
-import threading, pandas
-from django.conf import settings
 from django.core.mail import EmailMessage, send_mail
 from django.template.loader import render_to_string
+from django.conf import settings
+import threading, pandas
 
 context = {}
 # context["site_url"] = settings.FRONTEND_URL
@@ -135,4 +135,24 @@ class generate_team_event_participant_list_excel(threading.Thread):
             msg.send()
         except Exception as e:
             print(e)
+
+
+class send_certificates(threading.Thread):
+    def __init__(self, email, file_name):
+        self.file_name = file_name
+        self.email = email
+        threading.Thread.__init__(self)
+    def run(self):
+        try:
+            html_template = 'email/certificate.html'
+            html_message = render_to_string(html_template, context)
+            subject = 'Participation Certificate'
+            email_from = settings.EMAIL_HOST_USER
+            msg = EmailMessage(subject, html_message, email_from, [self.email])
+            msg.content_subtype = 'html'
+            msg.attach_file(str(self.file_name))
+            msg.send()
+        except Exception as e:
+            print(e)
+
 

@@ -23,8 +23,9 @@ urlpatterns = [
 	
 	path('set-winners/', views.setWinners, name="set-winners"),
 	
-	# path('generate-certicficated/', views.generateCertificates, name="generate-certicficated"),
-	# path('send-certificated/', views.sendCertificates, name="send-certificated"),
+	path('generate-certicficates/', views.generateParticipationCertificates, name="generate-certicficated"),
+	
+	path('generate-winner-certicficates/', views.generateWinnerCertificates, name="generate-winner-certicficated"),
 
 	path('notify-all-participants/', views.notifyAllParticipants, name="notify-all-participants"),
 

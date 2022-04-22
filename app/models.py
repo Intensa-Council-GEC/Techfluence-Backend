@@ -54,11 +54,13 @@ class TeamEventRulesModel(BaseModel):
 class SoloParticipation(BaseModel):
     participant = models.ForeignKey(ParticipantsModel, related_name="event_participant", on_delete=models.CASCADE)
     event = models.ForeignKey(SoloEventModel, related_name="solo_event_participant", on_delete=models.CASCADE)
+    has_attended = models.BooleanField(default=False)
     def __str__(self):
         return self.participant.name
 class TeamParticipation(BaseModel):
     team = models.ForeignKey(TeamModel, related_name="event_participant_team", on_delete=models.CASCADE)
     event = models.ForeignKey(TeamEventModel, related_name="team_event_participant", on_delete=models.CASCADE)
+    has_attended = models.BooleanField(default=False)
     def __str__(self):
         return self.team.name
 

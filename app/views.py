@@ -1,4 +1,3 @@
-import re
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -257,29 +256,6 @@ def setWinners(request):
             
 
 @api_view(["POST"])
-def generateCertificates(request):
-    try:
-        authentication_classes = [JWTAuthentication]
-        permission_classes = [IsAuthenticated]
-        if not OrganisersModel.objects.filter(email=request.user).first():
-            return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
-        org = OrganisersModel.objects.get(email=request.user)
-        res = checkTeamEvent(org)
-        if not res:
-            event = SoloEventModel.objects.get(organiser=org)
-            if not event:
-                return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
-        
-        else:
-            event = TeamEventModel.objects.get(organiser=org)
-            if not event:
-                return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
-        
-        return Response({"message":"Certificates Sent"}, status=status.HTTP_200_OK)
-    except Exception as e:
-        return Response({"error":str(e), "message":"Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-@api_view(["POST"])
 def notifyAllParticipants(request):
     try:
         ser = SpecialEmailSerializer(data=request.data)
@@ -291,3 +267,94 @@ def notifyAllParticipants(request):
         return Response({"error":ser.errors}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
         return Response({"error":str(e), "message":"Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(["POST"])
+def generateParticipationCertificates(request):
+    try:
+        authentication_classes = [JWTAuthentication]
+        permission_classes = [IsAuthenticated]
+        if not OrganisersModel.objects.filter(email=request.user).first():
+            return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+        org = OrganisersModel.objects.get(email=request.user)
+        res = checkTeamEvent(org)
+        li = []
+        if not res:
+            event = SoloEventModel.objects.get(organiser=org)
+            if not event:
+                return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+            objs = SoloParticipation.objects.filter(event=event, has_attended=True)
+            for obj in objs:
+                file_name = generateCertificate(obj.participant.name, obj.participant.id)
+                li.append(file_name)
+                thread_obj = send_certificates(obj.participant.email, file_name)
+                thread_obj.start()
+        else:
+            event = TeamEventModel.objects.get(organiser=org)
+            if not event:
+                return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+            objs = TeamParticipation.objects.filter(event=event, has_attended=True)
+            for obj in objs:
+                file_name = generateCertificate(obj.team.leader.name, obj.team.leader.id)
+                li.append(file_name)
+                for i in obj.team.members.all():
+                    file_name_2 = generateCertificate(i.name, i.id)
+                    li.append(file_name_2)
+                    thread_obj_1 = send_certificates(i.email, file_name_2)
+                    thread_obj_1.start()
+                thread_obj = send_certificates(obj.team.leader.email, file_name)
+                thread_obj.start()
+        li = list(dict.fromkeys(li))
+        combineCertificates(li, event.organiser.id, event.organiser.email)
+        return Response({"message":"Certificates Sent"}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error":str(e), "message":"Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(["POST"])
+def generateWinnerCertificates(request):
+    try:
+        authentication_classes = [JWTAuthentication]
+        permission_classes = [IsAuthenticated]
+        if not OrganisersModel.objects.filter(email=request.user).first():
+            return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+        org = OrganisersModel.objects.get(email=request.user)
+        res = checkTeamEvent(org)
+        li = []
+        if not res:
+            event = SoloEventModel.objects.get(organiser=org)
+            if not event:
+                return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+            obj = SoloWinnerModel.objects.get(event=event)
+            f1 = generateCertificate(obj.first.name, obj.first.id)
+            li.append(f1)
+            thread_obj = send_certificates(obj.first.email, f1)
+            thread_obj.start()
+            f2 = generateCertificate(obj.second.name, obj.second.id)
+            li.append(f2)
+            thread_obj = send_certificates(obj.second.email, f2)
+            thread_obj.start()
+        else:
+            event = TeamEventModel.objects.get(organiser=org)
+            if not event:
+                return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+            obj = TeamWinnerModel.objects.get(event=event)
+            f1 = generateCertificate(obj.first.leader.name, obj.first.leader.id)
+            li.append(f1)
+            thread_obj = send_certificates(obj.first.leader.email, f1)
+            thread_obj.start()
+            for i,j in zip(obj.first.members.all(), obj.second.members.all()):
+                f1 = generateCertificate(i.name, i.id)
+                li.append(f1)
+                thread_obj_1 = send_certificates(i.email, f1)
+                thread_obj_1.start()
+                f2 = generateCertificate(j.name, j.id)
+                li.append(f2)
+                thread_obj_2 = send_certificates(j.email, f2)
+                thread_obj_2.start()
+        li = list(dict.fromkeys(li))
+        combineCertificates(li, event.organiser.id, event.organiser.email)
+        return Response({"message":"Certificates Sent"}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error":str(e), "message":"Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+

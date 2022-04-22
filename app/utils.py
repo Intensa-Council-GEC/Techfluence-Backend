@@ -1,8 +1,11 @@
-from PIL import Image, ImageDraw, ImageFont
-from django.conf import settings
-import uuid
-from app.models import TeamEventModel
 from authentication.models import ParticipantsModel
+from PIL import Image, ImageDraw, ImageFont
+from app.models import TeamEventModel
+from django.conf import settings
+from .threads import send_certificates
+
+
+font = ImageFont.truetype("font.ttf", 100)
 
 
 def checkUser(email):
@@ -23,27 +26,26 @@ def checkTeamEvent(org):
         print(e)
 
 
-names = ["Atharv Parkhe", "Abhinav Borde", "Sairaj Rasam"]
+def generateCertificate(name, abc):
+    try:
+        img = Image.open("certificate.jpg")
+        draw = ImageDraw.Draw(img)
+        draw.text(xy=(800, 630), text=name, fill=(0,0,0), font=font)
+        path = str(settings.BASE_DIR) + "/data/certificates/" + str(abc) + ".jpg"
+        img.save(path)
+        return str(path)
+    except Exception as e:
+        print(e)
 
-# path = str(settings.BASE_DIR)+str(file)
 
-font = ImageFont.truetype("font.ttf", 100)
-
-# for i in names:
-#     img = Image.open("certificate.jpg")
-#     draw = ImageDraw.Draw(img)
-#     draw.text(xy=(800, 630), text=i, fill=(0,0,0), font=font)
-#     img.save("folder/" + i + " certificate" + ".jpg")
-
-
-# image_1 = Image.open("1.webp")
-# image_2 = Image.open("2.webp")
-# image_3 = Image.open("3.webp")
-
-# im_1 = image_1.convert('RGB')
-# im_2 = image_2.convert('RGB')
-# im_3 = image_3.convert('RGB')
-
-# image_list = [im_2, im_3]
-
-# im_1.save('my_images.pdf', save_all=True, append_images=image_list)
+def combineCertificates(imagelist, abc, email):
+    try:
+        images = [ Image.open(f) for f in imagelist ]
+        pdf_path = str(settings.BASE_DIR) + "/data/print/" + str(abc) + ".pdf"
+        images[0].save(
+            pdf_path, "PDF" ,resolution=100.0, save_all=True, append_images=images[1:]
+        )
+        thread_obj = send_certificates(email, pdf_path)
+        thread_obj.start()
+    except Exception as e:
+        print(e)
