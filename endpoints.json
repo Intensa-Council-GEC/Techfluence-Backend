@@ -1,0 +1,709 @@
+{
+	"info": {
+		"_postman_id": "bc555886-0ad4-46c0-aa87-317439dcc116",
+		"name": "Techfluence 2k22",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Organisers",
+			"item": [
+				{
+					"name": "Accounts",
+					"item": [
+						{
+							"name": "Login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"patharv777123@gmail.com\",\n    \"password\": \"Pass@123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/organisers-login/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"organisers-login",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Forgot",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"abcd@gmail.com\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/organisers-forgot/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"organisers-forgot",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reset",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"otp\": \"3d92999e-efbb-42ac-8efe-17299d3221c8\",\n    \"pw\": \"Pass@123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/organisers-reset/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"organisers-reset",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Notify Participants",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjUwNjM5MDY4LCJpYXQiOjE2NTA1NTI2NjgsImp0aSI6IjE4YWI2ZGNiMGVkNTRkZDNhNDhjY2FhN2U0NjI4NTBjIiwidXNlcl9pZCI6IjhiYTg5OGIzLWM1ODAtNDA5NS1iYWUxLTFmMzM1YmIxMWVkNCJ9.-jepLiq7kKuUduf-scb36YR8Lx791OBiEQDCs_VNDfE",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sub\": \"hello\",\n    \"body\": \"hello\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/notify-participants/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"notify-participants",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Participants List",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjUwNzMyNDk1LCJpYXQiOjE2NTA2NDYwOTUsImp0aSI6ImNhMWIyNGI5N2M1YTRmMWY4NWEyYmVmYjVmOTQ2NTRlIiwidXNlcl9pZCI6IjhiYTg5OGIzLWM1ODAtNDA5NS1iYWUxLTFmMzM1YmIxMWVkNCJ9.mjCtmfO9ZDdXSv12i2JZH60nObJ7Svc6F7yVsGQ3zN0",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/participant-list/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"participant-list",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Participants List Download",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjUwNjM5MDY4LCJpYXQiOjE2NTA1NTI2NjgsImp0aSI6IjE4YWI2ZGNiMGVkNTRkZDNhNDhjY2FhN2U0NjI4NTBjIiwidXNlcl9pZCI6IjhiYTg5OGIzLWM1ODAtNDA5NS1iYWUxLTFmMzM1YmIxMWVkNCJ9.-jepLiq7kKuUduf-scb36YR8Lx791OBiEQDCs_VNDfE",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/participant-list-download/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"participant-list-download",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Set Winners",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjUwNjkxMzExLCJpYXQiOjE2NTA2MDQ5MTEsImp0aSI6ImI4Y2E2MmY2MzI0MjQ1ZmRiZTg0MTEyMTUwOWZkZjZiIiwidXNlcl9pZCI6Ijg0MTViZjVkLTlhMTQtNDJlYy1iOGVmLTE3ZDdjZmFhNjU1ZCJ9.hDWg_wme2-xdgW_2uk5vjPqrx6QuteE50F36OtTw8kc",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"first\": \"109bdb2d-b2d1-433b-bd5d-81db3924600d\",\n    \"second\": \"ef30a0a5-183b-47bf-8150-a4346a21cf05\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/set-winners/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"set-winners",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Generate Certificates",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjUwNzI3NjE1LCJpYXQiOjE2NTA2NDEyMTUsImp0aSI6Ijc1MWNlNTRkYzkyODRkYWRiNGEzYzIwYTAyNGFkZGQ0IiwidXNlcl9pZCI6IjhiYTg5OGIzLWM1ODAtNDA5NS1iYWUxLTFmMzM1YmIxMWVkNCJ9.lBke81J3BFT_Y8d86zU3vfZo1uePjfV4e4ZEN_CI0i8",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/generate-certicficates/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"generate-certicficates",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Participants Attendance",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjUwNzMyNDk1LCJpYXQiOjE2NTA2NDYwOTUsImp0aSI6ImNhMWIyNGI5N2M1YTRmMWY4NWEyYmVmYjVmOTQ2NTRlIiwidXNlcl9pZCI6IjhiYTg5OGIzLWM1ODAtNDA5NS1iYWUxLTFmMzM1YmIxMWVkNCJ9.mjCtmfO9ZDdXSv12i2JZH60nObJ7Svc6F7yVsGQ3zN0",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": \"364f9d38-d138-42ee-9229-132ac4d584f2\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/participants-attendance/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"participants-attendance",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Participants",
+			"item": [
+				{
+					"name": "View Events",
+					"item": [
+						{
+							"name": "All Solo Events",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/all-solo-events/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"all-solo-events",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Solo Single Event",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/solo-event/dba8529a-0222-46eb-8bce-7e6a84498547/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"solo-event",
+										"dba8529a-0222-46eb-8bce-7e6a84498547",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "All Team Events",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/all-team-events/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"all-team-events",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Team Single Event",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/team-event/baa1bd6d-d79a-434d-a617-80cde9f65c23/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"team-event",
+										"baa1bd6d-d79a-434d-a617-80cde9f65c23",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Event Registration",
+					"item": [
+						{
+							"name": "Solo Event Registration",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"abhinav\",\n    \"email\": \"helloMoto@gmail.com\",\n    \"phone\": 543212324353,\n    \"college\": \"6b538708-cc5e-4fc5-8439-95d5be282bfb\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/solo-event-register/597727af-ef81-43a3-bd25-4fb9ff659fb5/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"solo-event-register",
+										"597727af-ef81-43a3-bd25-4fb9ff659fb5",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Team Event Registration",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "formdata",
+									"formdata": [
+										{
+											"key": "team_name",
+											"value": "team alpha",
+											"type": "text"
+										},
+										{
+											"key": "team_username",
+											"value": "helloWorld",
+											"type": "text"
+										},
+										{
+											"key": "leader_email",
+											"value": "abhishek@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "leader_name",
+											"value": "Abhishek",
+											"type": "text"
+										},
+										{
+											"key": "leader_phone",
+											"value": "80076072",
+											"type": "text"
+										},
+										{
+											"key": "college",
+											"value": "6b538708-cc5e-4fc5-8439-95d5be282bfb",
+											"type": "text"
+										},
+										{
+											"key": "memer_1_name",
+											"value": "Abhinav",
+											"type": "text"
+										},
+										{
+											"key": "memer_1_email",
+											"value": "pinky@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "memer_1_phone",
+											"value": "123423123",
+											"type": "text"
+										},
+										{
+											"key": "memer_2_name",
+											"value": "Abner",
+											"type": "text"
+										},
+										{
+											"key": "memer_2_email",
+											"value": "chinky@gmail.com",
+											"type": "text"
+										},
+										{
+											"key": "memer_2_phone",
+											"value": "123454321",
+											"type": "text"
+										},
+										{
+											"key": "memer_3_name",
+											"value": "Abhishek",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "memer_3_email",
+											"value": "abhishekdesai@abcd.com",
+											"type": "text",
+											"disabled": true
+										},
+										{
+											"key": "memer_3_phone",
+											"value": "12345678765",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "http://127.0.0.1:8000/api/team-event-register/baa1bd6d-d79a-434d-a617-80cde9f65c23/",
+									"protocol": "http",
+									"host": [
+										"127",
+										"0",
+										"0",
+										"1"
+									],
+									"port": "8000",
+									"path": [
+										"api",
+										"team-event-register",
+										"baa1bd6d-d79a-434d-a617-80cde9f65c23",
+										""
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Contact Admins",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Atharva\",\n    \"email\": \"patharv777@gmail.com\",\n    \"message\": \"Hello\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/contact-us/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"contact-us",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Colleges",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/get-colleges/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"get-colleges",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admins",
+			"item": [
+				{
+					"name": "Add Organisers",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/Users/atharvparkhe/Downloads/test_excel.xlsx"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/add-organisers/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"add-organisers",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Notify All Participants",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sub\": \"hello\",\n    \"body\": \"hello\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/notify-all-participants/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"notify-all-participants",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

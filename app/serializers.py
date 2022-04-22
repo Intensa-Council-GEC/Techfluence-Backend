@@ -115,3 +115,7 @@ class TeamEventParticipantsListSerializer(serializers.ModelSerializer):
     class Meta:
         model = TeamParticipation
         fields = ["team"]
+
+
+class IDSerializer(serializers.Serializer):
+    id = serializers.CharField(required = True)

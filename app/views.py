@@ -285,7 +285,7 @@ def generateParticipationCertificates(request):
                 return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
             objs = SoloParticipation.objects.filter(event=event, has_attended=True)
             for obj in objs:
-                file_name = generateCertificate(obj.participant.name, obj.participant.id)
+                file_name = generateCertificate(event.title, obj.participant.name, obj.participant.id)
                 li.append(file_name)
                 thread_obj = send_certificates(obj.participant.email, file_name)
                 thread_obj.start()
@@ -295,12 +295,12 @@ def generateParticipationCertificates(request):
                 return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
             objs = TeamParticipation.objects.filter(event=event, has_attended=True)
             for obj in objs:
-                file_name = generateCertificate(obj.team.leader.name, obj.team.leader.id)
+                file_name = generateCertificate(event.title, obj.team.leader.name, obj.team.leader.id)
                 li.append(file_name)
                 for i in obj.team.members.all():
-                    file_name_2 = generateCertificate(i.name, i.id)
+                    file_name_2 = generateCertificate(event.title, i.name, i.id)
                     li.append(file_name_2)
-                    thread_obj_1 = send_certificates(i.email, file_name_2)
+                    thread_obj_1 = send_certificates(event.title, i.email, file_name_2)
                     thread_obj_1.start()
                 thread_obj = send_certificates(obj.team.leader.email, file_name)
                 thread_obj.start()
@@ -326,11 +326,11 @@ def generateWinnerCertificates(request):
             if not event:
                 return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
             obj = SoloWinnerModel.objects.get(event=event)
-            f1 = generateCertificate(obj.first.name, obj.first.id)
+            f1 = generateWinnerCertificate(event.title, obj.first.name, obj.first.id, "first")
             li.append(f1)
             thread_obj = send_certificates(obj.first.email, f1)
             thread_obj.start()
-            f2 = generateCertificate(obj.second.name, obj.second.id)
+            f2 = generateWinnerCertificate(event.title, obj.second.name, obj.second.id, "second")
             li.append(f2)
             thread_obj = send_certificates(obj.second.email, f2)
             thread_obj.start()
@@ -339,22 +339,61 @@ def generateWinnerCertificates(request):
             if not event:
                 return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
             obj = TeamWinnerModel.objects.get(event=event)
-            f1 = generateCertificate(obj.first.leader.name, obj.first.leader.id)
+            f1 = generateWinnerCertificate(event.title, obj.first.leader.name, obj.first.leader.id, "first")
             li.append(f1)
-            thread_obj = send_certificates(obj.first.leader.email, f1)
-            thread_obj.start()
+            thread_obj1 = send_certificates(obj.first.leader.email, f1)
+            thread_obj1.start()
+            f2 = generateWinnerCertificate(event.title, obj.second.leader.name, obj.second.leader.id, "second")
+            li.append(f2)
+            thread_obj2 = send_certificates(obj.second.leader.email, f2)
+            thread_obj2.start()
             for i,j in zip(obj.first.members.all(), obj.second.members.all()):
-                f1 = generateCertificate(i.name, i.id)
+                f1 = generateWinnerCertificate(event.title, i.name, i.id, "first")
                 li.append(f1)
                 thread_obj_1 = send_certificates(i.email, f1)
                 thread_obj_1.start()
-                f2 = generateCertificate(j.name, j.id)
+                f2 = generateWinnerCertificate(event.title, j.name, j.id, "second")
                 li.append(f2)
                 thread_obj_2 = send_certificates(j.email, f2)
                 thread_obj_2.start()
         li = list(dict.fromkeys(li))
         combineCertificates(li, event.organiser.id, event.organiser.email)
         return Response({"message":"Certificates Sent"}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error":str(e), "message":"Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(["POST"])
+def attendance(request):
+    try:
+        authentication_classes = [JWTAuthentication]
+        permission_classes = [IsAuthenticated]
+        if not OrganisersModel.objects.filter(email=request.user).first():
+            return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+        org = OrganisersModel.objects.get(email=request.user)
+        ser = IDSerializer(data=request.data)
+        if not ser.is_valid():
+            return Response({"error":ser.errors}, status=status.HTTP_400_BAD_REQUEST)
+        res = checkTeamEvent(org)
+        if not res:
+            event = SoloEventModel.objects.get(organiser=org)
+            if not event:
+                return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+            if not ParticipantsModel.objects.filter(id=ser.data["id"]):
+                return Response({"message":"Invalid ID"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+            obj = SoloParticipation.objects.get(participant=ParticipantsModel.objects.get(id=ser.data["id"]))
+            obj.has_attended = True
+            obj.save()
+        else:
+            event = TeamEventModel.objects.get(organiser=org)
+            if not event:
+                return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+            if not TeamModel.objects.filter(id=ser.data["id"]):
+                return Response({"message":"Invalid ID"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+            obj = TeamParticipation.objects.get(team=TeamModel.objects.get(id=ser.data["id"]))
+            obj.has_attended = True
+            obj.save()
+        return Response({"message":"Attendance Marked"}, status=status.HTTP_200_OK)
     except Exception as e:
         return Response({"error":str(e), "message":"Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 

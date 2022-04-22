@@ -5,7 +5,7 @@ from django.conf import settings
 from .threads import send_certificates
 
 
-font = ImageFont.truetype("font.ttf", 100)
+font = ImageFont.truetype("certificates/font.ttf", 100)
 
 
 def checkUser(email):
@@ -26,10 +26,25 @@ def checkTeamEvent(org):
         print(e)
 
 
-def generateCertificate(name, abc):
+def generateCertificate(event, name, abc):
     try:
-        img = Image.open("certificate.jpg")
+        img = Image.open("certificates/certificate.jpg")
         draw = ImageDraw.Draw(img)
+        draw.text(xy=(800, 400), text=event, fill=(0,0,0), font=font)
+        draw.text(xy=(800, 630), text=name, fill=(0,0,0), font=font)
+        path = str(settings.BASE_DIR) + "/data/certificates/" + str(abc) + ".jpg"
+        img.save(path)
+        return str(path)
+    except Exception as e:
+        print(e)
+
+
+def generateWinnerCertificate(event, name, abc, position):
+    try:
+        img = Image.open("certificates/certificate.jpg")
+        draw = ImageDraw.Draw(img)
+        draw.text(xy=(800, 400), text=event, fill=(0,0,0), font=font)
+        draw.text(xy=(600, 500), text=position, fill=(0,0,0), font=font)
         draw.text(xy=(800, 630), text=name, fill=(0,0,0), font=font)
         path = str(settings.BASE_DIR) + "/data/certificates/" + str(abc) + ".jpg"
         img.save(path)
