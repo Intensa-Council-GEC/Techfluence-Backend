@@ -58,7 +58,7 @@ class AddTeamSerializer(serializers.ModelSerializer):
 class ParticipantDisplaySerilaizer(serializers.ModelSerializer):
     class Meta:
         model = ParticipantsModel
-        fields = ["name", "email", "phone"]
+        fields = ["id", "name", "email", "phone"]
 
 
 class TeamDisplaySerilizer(serializers.ModelSerializer):
@@ -66,4 +66,10 @@ class TeamDisplaySerilizer(serializers.ModelSerializer):
     members = ParticipantDisplaySerilaizer(read_only=True, many=True)
     class Meta:
         model = TeamModel
-        fields = ["leader", "name", "team_username", "members"]
+        fields = ["id", "leader", "name", "team_username", "members"]
+
+
+class SetWinnersSerializer(serializers.Serializer):
+    first = serializers.CharField(required = True)
+    second = serializers.CharField(required = True)
+

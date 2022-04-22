@@ -1,3 +1,4 @@
+import re
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
@@ -64,8 +65,8 @@ def soloEventRegistration(request, event_id):
             participation, _ = SoloParticipation.objects.get_or_create(participant=user_obj, event=event)
             thread_obj = send_solo_participation_acknowledgement(email, event.title)
             thread_obj.start()
-            participation.save()
             user_obj.save()
+            participation.save()
             return Response({"message":"user added to participants"}, status=status.HTTP_200_OK)
         return Response({"error":ser.errors}, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
@@ -122,46 +123,30 @@ def teamEventRegistration(request, event_id):
 
 
 @api_view(["POST"])
-def soloSendMailToParticipants(request):
+def sendMailToParticipants(request):
     try:
         authentication_classes = [JWTAuthentication]
         permission_classes = [IsAuthenticated]
         if not OrganisersModel.objects.filter(email=request.user).first():
             return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
         org = OrganisersModel.objects.get(email=request.user)
-        event = SoloEventModel.objects.get(organiser=org)
-        if not event:
-            return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
-        participants = SoloParticipation.objects.filter(event=event)
+        res = checkTeamEvent(org)
         recievers_list = []
-        for i in participants:
-            recievers_list.append(i.participant.email)
-        ser = SpecialEmailSerializer(data=request.data)
-        if ser.is_valid():
-            thread_obj = send_special_email(ser.data["sub"], ser.data["body"], recievers_list)
-            thread_obj.start()
-            return Response({"message":"All Participants notifed"}, status=status.HTTP_200_OK)
-        return Response({"error":ser.errors}, status=status.HTTP_400_BAD_REQUEST)
-    except Exception as e:
-        return Response({"error":str(e), "message":"Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-@api_view(["POST"])
-def teamSendMailToParticipants(request):
-    try:
-        authentication_classes = [JWTAuthentication]
-        permission_classes = [IsAuthenticated]
-        if not OrganisersModel.objects.filter(email=request.user).first():
-            return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
-        org = OrganisersModel.objects.get(email=request.user)
-        event = TeamEventModel.objects.get(organiser=org)
-        if not event:
-            return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
-        teams = TeamParticipation.objects.filter(event=event)
-        recievers_list = []
-        for i in teams:
-            recievers_list.extend(list(i.team.members.all().values_list("email", flat=True)))
-            recievers_list.append(i.team.leader.email)
+        if not res:
+            event = SoloEventModel.objects.get(organiser=org)
+            if not event:
+                return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+            participants = SoloParticipation.objects.filter(event=event)
+            for i in participants:
+                recievers_list.append(i.participant.email)
+        else:
+            event = TeamEventModel.objects.get(organiser=org)
+            if not event:
+                return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+            teams = TeamParticipation.objects.filter(event=event)
+            for i in teams:
+                recievers_list.extend(list(i.team.members.all().values_list("email", flat=True)))
+                recievers_list.append(i.team.leader.email)
         ser = SpecialEmailSerializer(data=request.data)
         if ser.is_valid():
             thread_obj = send_special_email(ser.data["sub"], ser.data["body"], recievers_list)
@@ -173,31 +158,21 @@ def teamSendMailToParticipants(request):
 
 
 @api_view(["GET"])
-def GetSoloEventParticipantsList(request):
+def getEventParticipantsList(request):
     try:
         authentication_classes = [JWTAuthentication]
         permission_classes = [IsAuthenticated]
         if not OrganisersModel.objects.filter(email=request.user).first():
             return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
         org = OrganisersModel.objects.get(email=request.user)
-        event = SoloEventModel.objects.get(organiser=org)
-        if not event:
-            return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
-        objs = SoloParticipation.objects.filter(event=event)
-        ser = SoloEventParticipantsListSerializer(objs, many=True)
-        return Response(ser.data, status=status.HTTP_200_OK)
-    except Exception as e:
-        return Response({"error":str(e), "message":"Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-@api_view(["GET"])
-def GetTeamEventParticipantsList(request):
-    try:
-        authentication_classes = [JWTAuthentication]
-        permission_classes = [IsAuthenticated]
-        if not OrganisersModel.objects.filter(email=request.user).first():
-            return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
-        org = OrganisersModel.objects.get(email=request.user)
+        res = checkTeamEvent(org)
+        if not res:
+            event = SoloEventModel.objects.get(organiser=org)
+            if not event:
+                return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+            objs = SoloParticipation.objects.filter(event=event)
+            ser = SoloEventParticipantsListSerializer(objs, many=True)
+            return Response(ser.data, status=status.HTTP_200_OK)
         event = TeamEventModel.objects.get(organiser=org)
         if not event:
             return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
@@ -208,29 +183,111 @@ def GetTeamEventParticipantsList(request):
         return Response({"error":str(e), "message":"Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+@api_view(["POST"])
+def downloadParticipantsList(request):
+    try:
+        authentication_classes = [JWTAuthentication]
+        permission_classes = [IsAuthenticated]
+        if not OrganisersModel.objects.filter(email=request.user).first():
+            return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+        org = OrganisersModel.objects.get(email=request.user)
+        res = checkTeamEvent(org)
+        if not res:
+            event = SoloEventModel.objects.get(organiser=org)
+            if not event:
+                return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+            objs = SoloParticipation.objects.filter(event=event)
+            thread_obj = generate_solo_event_participant_list_excel(objs, org.email)
+            thread_obj.start()
+        else:
+            event = TeamEventModel.objects.get(organiser=org)
+            if not event:
+                return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+            objs = TeamParticipation.objects.filter(event=event)
+            thread_obj = generate_team_event_participant_list_excel(objs, org.email)
+            thread_obj.start()
+        return Response({"message":"Excel Sheet sent to your mail"}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error":str(e), "message":"Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-# @api_view(["POST"])
-# def generateCertificates(request):
-#     try:
-#         return Response({"error":ser.errors}, status=status.HTTP_400_BAD_REQUEST)
-#     except Exception as e:
-#         return Response({"error":str(e), "message":"Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
+@api_view(["POST"])
+def setWinners(request):
+    try:
+        authentication_classes = [JWTAuthentication]
+        permission_classes = [IsAuthenticated]
+        if not OrganisersModel.objects.filter(email=request.user).first():
+            return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+        org = OrganisersModel.objects.get(email=request.user)
+        ser = SetWinnersSerializer(data=request.data)
+        if not ser.is_valid():
+            return Response({"error":ser.errors}, status=status.HTTP_400_BAD_REQUEST)
+        first_id = ser.data["first"]
+        second_id = ser.data["second"]
+        res = checkTeamEvent(org)
+        if not res:
+            event = SoloEventModel.objects.get(organiser=org)
+            if not event:
+                return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+            first_place = ParticipantsModel.objects.get(id=first_id)
+            second_place = ParticipantsModel.objects.get(id=second_id)
+            if not (SoloParticipation.objects.filter(participant=first_place) or SoloParticipation.objects.filter(participant=second_place)):
+                return Response({"message":"invalid ID"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+            SoloWinnerModel.objects.create(
+                event = event,
+                first = first_place,
+                second = second_place
+            )
+        else:
+            event = TeamEventModel.objects.get(organiser=org)
+            if not event:
+                return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+            first_place = TeamModel.objects.get(id=first_id)
+            second_place = TeamModel.objects.get(id=second_id)
+            if not (TeamParticipation.objects.filter(team=first_place) or TeamParticipation.objects.filter(team=second_place)):
+                return Response({"message":"invalid ID"}, status=status.HTTP_406_NOT_ACCEPTABLE)
+            TeamWinnerModel.objects.create(
+                event = event,
+                first = first_place,
+                second = second_place
+            )
+        return Response({"message":"Winners Added"}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error":str(e), "message":"Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
 
-# @api_view(["POST"])
-# def sendCertificates(request):
-#     try:
+@api_view(["POST"])
+def generateCertificates(request):
+    try:
+        authentication_classes = [JWTAuthentication]
+        permission_classes = [IsAuthenticated]
+        if not OrganisersModel.objects.filter(email=request.user).first():
+            return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+        org = OrganisersModel.objects.get(email=request.user)
+        res = checkTeamEvent(org)
+        if not res:
+            event = SoloEventModel.objects.get(organiser=org)
+            if not event:
+                return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
         
-#         return Response({"error":ser.errors}, status=status.HTTP_400_BAD_REQUEST)
-#     except Exception as e:
-#         return Response({"error":str(e), "message":"Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        else:
+            event = TeamEventModel.objects.get(organiser=org)
+            if not event:
+                return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        return Response({"message":"Certificates Sent"}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"error":str(e), "message":"Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-
-
-
-# # class EditEventDetails(RetrieveUpdateAPIView):
-# #     authentication_classes = [JWTAuthentication]
-# #     permission_classes = [IsAuthenticated]
-# #     queryset = EventModel.objects.all()
-# #     serializer_class = EventDetailSerislizer
-# #     lookup_field = "id"
+@api_view(["POST"])
+def notifyAllParticipants(request):
+    try:
+        ser = SpecialEmailSerializer(data=request.data)
+        if ser.is_valid():
+            recievers_list = ParticipantsModel.objects.all().values_list("email", flat=True)
+            thread_obj = send_special_email(ser.data["sub"], ser.data["body"], recievers_list)
+            thread_obj.start()
+            return Response({"message":"Email Sent to all participants"}, status=status.HTTP_200_OK)
+        return Response({"error":ser.errors}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({"error":str(e), "message":"Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

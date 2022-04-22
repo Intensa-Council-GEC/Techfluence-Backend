@@ -23,8 +23,6 @@ class AddOrganiserModel(BaseModel):
 
 class ParticipantsModel(BaseUser):
     college = models.ForeignKey(CollegeModel, related_name="student_college", on_delete=models.CASCADE)
-    vaccination = models.FileField(upload_to="vaccination", max_length=100, null=True, blank=True, validators=[validate_file_extension_2, validate_file_size])
-    aadhar = models.FileField(upload_to="aadhar", max_length=100, null=True, blank=True, validators=[validate_file_extension_2, validate_file_size])
     def __str__(self):
         return self.name
 

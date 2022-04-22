@@ -15,21 +15,17 @@ urlpatterns = [
 	path('solo-event-register/<event_id>/', views.soloEventRegistration, name="register-for-solo-event"),
 	path('team-event-register/<event_id>/', views.teamEventRegistration, name="register-for-team-event"),
 	
-	path('solo-event-participants-notify/', views.soloSendMailToParticipants, name="send-mail-to-participants"),
-	path('team-event-participants-notify/', views.teamSendMailToParticipants, name="send-mail-to-participants"),
+	path('notify-participants/', views.sendMailToParticipants, name="send-mail-to-participants"),
 
-	path('solo-participant-list/', views.GetSoloEventParticipantsList, name="solo-participant-list"),
-	path('team-participant-list/', views.GetTeamEventParticipantsList, name="team-participant-list"),
+	path('participant-list/', views.getEventParticipantsList, name="participant-list"),
 
-	# path('solo-event-participant-list-download/', views.participantsList, name="solo-event-participant-list-download"),
-	# path('team-event-participant-list-download/', views.participantsList, name="team-event-participant-list-download"),
+	path('participant-list-download/', views.downloadParticipantsList, name="event-participant-list-download"),
+	
+	path('set-winners/', views.setWinners, name="set-winners"),
 	
 	# path('generate-certicficated/', views.generateCertificates, name="generate-certicficated"),
 	# path('send-certificated/', views.sendCertificates, name="send-certificated"),
 
-	# path('set-solo-event-winners/', views.setSoloWinners, name="set-solo-event-winners"),
-	# path('set-team-event-winners/', views.setTeamWinners, name="set-team-event-winners"),
-
-	# path('edit-event-details/', views.EditEventDetails.as_view(), name="edit-event-details"),
+	path('notify-all-participants/', views.notifyAllParticipants, name="notify-all-participants"),
 
 ]

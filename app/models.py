@@ -54,23 +54,26 @@ class TeamEventRulesModel(BaseModel):
 class SoloParticipation(BaseModel):
     participant = models.ForeignKey(ParticipantsModel, related_name="event_participant", on_delete=models.CASCADE)
     event = models.ForeignKey(SoloEventModel, related_name="solo_event_participant", on_delete=models.CASCADE)
+    def __str__(self):
+        return self.participant.name
 class TeamParticipation(BaseModel):
     team = models.ForeignKey(TeamModel, related_name="event_participant_team", on_delete=models.CASCADE)
     event = models.ForeignKey(TeamEventModel, related_name="team_event_participant", on_delete=models.CASCADE)
-
+    def __str__(self):
+        return self.team.name
 
 class SoloWinnerModel(BaseModel):
     event = models.OneToOneField(SoloEventModel, on_delete=models.CASCADE)
     first = models.ForeignKey(ParticipantsModel, related_name="solo_first_place", on_delete=models.CASCADE)
     second = models.ForeignKey(ParticipantsModel, related_name="solo_second_place", on_delete=models.CASCADE)
     def __str__(self):
-        return self.event
+        return self.event.title
 class TeamWinnerModel(BaseModel):
     event = models.OneToOneField(TeamEventModel, on_delete=models.CASCADE)
     first = models.ForeignKey(TeamModel, related_name="team_first_place", on_delete=models.CASCADE)
     second = models.ForeignKey(TeamModel, related_name="team_second_place", on_delete=models.CASCADE)
     def __str__(self):
-        return self.event
+        return self.event.title
 
 
 

@@ -1,6 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont
 from django.conf import settings
 import uuid
+from app.models import TeamEventModel
 from authentication.models import ParticipantsModel
 
 
@@ -11,6 +12,16 @@ def checkUser(email):
         return False
     except Exception as e:
         print(e)
+
+
+def checkTeamEvent(org):
+    try:
+        if TeamEventModel.objects.filter(organiser=org):
+            return True
+        return False
+    except Exception as e:
+        print(e)
+
 
 names = ["Atharv Parkhe", "Abhinav Borde", "Sairaj Rasam"]
 
