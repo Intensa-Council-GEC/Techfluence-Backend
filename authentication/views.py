@@ -9,7 +9,7 @@ from .serializers import *
 from .threads import *
 from .models import *
 from .utils import *
-import pandas as pd
+import xlrd
 
 
 @api_view(["POST"])
@@ -20,16 +20,17 @@ def addOrganisers(request):
             ser.save()
             file = ser.data["file"]
             path = str(settings.BASE_DIR)+str(file)
-            df = pd.read_excel(path)
-            for i in df.values:
+            workbook = xlrd.open_workbook(path)
+            sheet = workbook.sheet_by_index(0)
+            for row in range(1,sheet.nrows):
                 org = OrganisersModel.objects.create(
-                        name = str(i[0]),
-                        email = str(i[1]).lower(),
-                        phone = i[2]
+                        name = str(sheet.cell_value(row,0)),
+                        email = str(sheet.cell_value(row,1)).lower(),
+                        phone = sheet.cell_value(row,2)
                     )
                 pw = get_random_string(8)
                 org.set_password(pw)
-                thread_obj = send_organisers_mail(str(i[1]).lower(), pw)
+                thread_obj = send_organisers_mail(str(sheet.cell_value(row,1)).lower(), pw)
                 thread_obj.start()
                 org.save()
             return Response({"message":"Organisers Added"}, status=status.HTTP_201_CREATED)

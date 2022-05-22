@@ -1,7 +1,7 @@
 from django.core.mail import EmailMessage, send_mail
 from django.template.loader import render_to_string
 from django.conf import settings
-import threading, pandas
+import threading, xlsxwriter
 
 context = {}
 # context["site_url"] = settings.FRONTEND_URL
@@ -85,13 +85,16 @@ class generate_solo_event_participant_list_excel(threading.Thread):
         threading.Thread.__init__(self)
     def run(self):
         try:
-            data = []
-            for obj in self.obj_list:
-                l1 = [obj.participant.name, obj.participant.email, obj.participant.phone]
-                data.append(l1)
-            data = pandas.DataFrame(data, columns=['Name', 'Email ID', 'Phone No.'])
             file_name = "data/participant_list/solo.xlsx"
-            data.to_excel(file_name)
+            workbook = xlsxwriter.Workbook(file_name)
+            worksheet = workbook.add_worksheet()
+            worksheet.write("A1", "Name")
+            worksheet.write("B1", "Email")
+            worksheet.write("C1", "Phone")
+            for obj in self.obj_list:
+                worksheet.write(str(obj.participant.name))
+            #     worksheet.write(str(obj.participant.name), str(obj.participant.email), str(obj.participant.phone))
+            workbook.close()
             sub = "Participants List"
             body = "Excel sheet containing details of participants has been attached bellow."
             msg = EmailMessage(sub, body, settings.EMAIL_HOST_USER, [self.email])
@@ -124,9 +127,9 @@ class generate_team_event_participant_list_excel(threading.Thread):
                 data.append(li3)
             col = ['Team Name', 'Leader Name', 'Leader Email ID', 'Leader Phone No.']
             col.extend(li)
-            data = pandas.DataFrame(data, columns=col)
+            # data = pandas.DataFrame(data, columns=col)
             file_name = "data/participant_list/team.xlsx"
-            data.to_excel(file_name)
+            # data.to_excel(file_name)
             sub = "Participants List"
             body = "Excel sheet containing details of participants has been attached bellow."
             msg = EmailMessage(sub, body, settings.EMAIL_HOST_USER, [self.email])

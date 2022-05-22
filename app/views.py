@@ -55,7 +55,7 @@ def soloEventRegistration(request, event_id):
             if res:
                 user_obj = ParticipantsModel.objects.get(email=email)
             else:
-                user_obj, _ = ParticipantsModel.objects.create(
+                user_obj = ParticipantsModel.objects.create(
                     email = email,
                     name = ser.data["name"],
                     phone = ser.data["phone"], 
