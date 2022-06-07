@@ -13,6 +13,7 @@ class send_organisers_mail(threading.Thread):
             subject = "Login Credentials"
             message = f"The login credentails toaccess your account are as following.\n Email : {self.email}\n Password : {self.pw}"
             email_from = settings.EMAIL_HOST_USER
+            print(self.pw)
             send_mail(subject , message ,email_from ,[self.email])
         except Exception as e:
             print(e)
