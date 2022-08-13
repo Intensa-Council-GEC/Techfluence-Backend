@@ -161,6 +161,7 @@ The docs folder contain all the project documentations and screenshots of the pr
 
 ![Get Colleges](docs/project/get-colleges.png)
 ![Contact Admins](docs/project/contact-admins.png)
+![Certificate](docs/project/certificate.png)
 
 
 ### 🙋🏻‍♂️ Author
