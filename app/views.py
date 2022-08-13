@@ -270,6 +270,20 @@ def notifyAllParticipants(request):
 
 
 @api_view(["POST"])
+def notifyAllOrganisers(request):
+    try:
+        ser = SpecialEmailSerializer(data=request.data)
+        if ser.is_valid():
+            recievers_list = OrganisersModel.objects.all().values_list("email", flat=True)
+            thread_obj = send_special_email(ser.data["sub"], ser.data["body"], recievers_list)
+            thread_obj.start()
+            return Response({"message":"Email Sent to all Organisers"}, status=status.HTTP_200_OK)
+        return Response({"error":ser.errors}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({"error":str(e), "message":"Something went wrong"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(["POST"])
 def generateParticipationCertificates(request):
     try:
         authentication_classes = [JWTAuthentication]

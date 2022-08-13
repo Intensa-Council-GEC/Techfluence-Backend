@@ -76,7 +76,7 @@ def organiser_forgot(request):
                 return Response({"message":"Account does not exists"}, status=status.HTTP_404_NOT_FOUND)
             otp = uuid.uuid4()
             user.token = otp
-            # print(otp)
+            print(otp)
             user.save()
             thread_obj = send_forgot_email(email, otp)
             thread_obj.start()

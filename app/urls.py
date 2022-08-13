@@ -28,6 +28,7 @@ urlpatterns = [
 	path('generate-winner-certicficates/', views.generateWinnerCertificates, name="generate-winner-certicficated"),
 
 	path('notify-all-participants/', views.notifyAllParticipants, name="notify-all-participants"),
+	path('notify-all-organisers/', views.notifyAllOrganisers, name="notify-all-organisers"),
 	
 	path('participants-attendance/', views.attendance, name="participants-attendance"),
 

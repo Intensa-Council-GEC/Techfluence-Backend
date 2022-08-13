@@ -1,8 +1,9 @@
 {
 	"info": {
 		"_postman_id": "bc555886-0ad4-46c0-aa87-317439dcc116",
-		"name": "Techfluence 2k22",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"name": "Techfluence Backend",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "16397653"
 	},
 	"item": [
 		{
@@ -18,7 +19,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"email\": \"patharv777123@gmail.com\",\n    \"password\": \"Pass@123\"\n}",
+									"raw": "{\n    \"email\": \"patharv777@gmail.com\",\n    \"password\": \"regaibbf\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -188,7 +189,7 @@
 						"header": [
 							{
 								"key": "Authorization",
-								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjUwNjM5MDY4LCJpYXQiOjE2NTA1NTI2NjgsImp0aSI6IjE4YWI2ZGNiMGVkNTRkZDNhNDhjY2FhN2U0NjI4NTBjIiwidXNlcl9pZCI6IjhiYTg5OGIzLWM1ODAtNDA5NS1iYWUxLTFmMzM1YmIxMWVkNCJ9.-jepLiq7kKuUduf-scb36YR8Lx791OBiEQDCs_VNDfE",
+								"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjUyODUwMTI5LCJpYXQiOjE2NTI3NjM3MjksImp0aSI6ImM2NzhjZTUwMzgzYTRkN2NiYjNmN2UzNTYzOGZiZTQ1IiwidXNlcl9pZCI6IjE1MTg1MTY5LTQ2ZDUtNDYxMy05NGQzLWI5Y2YwNWYzOWU2NCJ9.2H7PNWn9EcK5cU96YQ62zmqZCkLNWP1OBQARsw_yJ1Y",
 								"type": "text"
 							}
 						],
@@ -437,7 +438,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"abhinav\",\n    \"email\": \"helloMoto@gmail.com\",\n    \"phone\": 543212324353,\n    \"college\": \"6b538708-cc5e-4fc5-8439-95d5be282bfb\"\n}",
+									"raw": "{\n    \"name\": \"abhinav\",\n    \"email\": \"fabrizo1357@gmail.com\",\n    \"phone\": 543212324353,\n    \"college\": \"c6cc10e5-dba1-4dbe-8354-34e47108f227\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -445,7 +446,7 @@
 									}
 								},
 								"url": {
-									"raw": "http://127.0.0.1:8000/api/solo-event-register/597727af-ef81-43a3-bd25-4fb9ff659fb5/",
+									"raw": "http://127.0.0.1:8000/api/solo-event-register/f0d11567-fba4-4a76-be1f-030685696ac6/",
 									"protocol": "http",
 									"host": [
 										"127",
@@ -457,7 +458,7 @@
 									"path": [
 										"api",
 										"solo-event-register",
-										"597727af-ef81-43a3-bd25-4fb9ff659fb5",
+										"f0d11567-fba4-4a76-be1f-030685696ac6",
 										""
 									]
 								}
@@ -647,7 +648,7 @@
 								{
 									"key": "file",
 									"type": "file",
-									"src": "/Users/atharvparkhe/Downloads/test_excel.xlsx"
+									"src": "/Users/atharvparkhe/Downloads/abc.xls"
 								}
 							]
 						},
@@ -677,7 +678,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"sub\": \"hello\",\n    \"body\": \"hello\"\n}",
+							"raw": "{\n    \"sub\": \"This is a test email\",\n    \"body\": \"hello world !!\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -697,6 +698,39 @@
 							"path": [
 								"api",
 								"notify-all-participants",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Notify All Organisers",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"sub\": \"This is a test email\",\n    \"body\": \"hello world !!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:8000/api/notify-all-organisers/",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "8000",
+							"path": [
+								"api",
+								"notify-all-organisers",
 								""
 							]
 						}
