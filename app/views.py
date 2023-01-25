@@ -1,7 +1,7 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import *
@@ -122,10 +122,9 @@ def teamEventRegistration(request, event_id):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def sendMailToParticipants(request):
     try:
-        authentication_classes = [JWTAuthentication]
-        permission_classes = [IsAuthenticated]
         if not OrganisersModel.objects.filter(email=request.user).first():
             return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
         org = OrganisersModel.objects.get(email=request.user)
@@ -157,10 +156,9 @@ def sendMailToParticipants(request):
 
 
 @api_view(["GET"])
+@permission_classes([IsAuthenticated])
 def getEventParticipantsList(request):
     try:
-        authentication_classes = [JWTAuthentication]
-        permission_classes = [IsAuthenticated]
         if not OrganisersModel.objects.filter(email=request.user).first():
             return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
         org = OrganisersModel.objects.get(email=request.user)
@@ -183,10 +181,9 @@ def getEventParticipantsList(request):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def downloadParticipantsList(request):
     try:
-        authentication_classes = [JWTAuthentication]
-        permission_classes = [IsAuthenticated]
         if not OrganisersModel.objects.filter(email=request.user).first():
             return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
         org = OrganisersModel.objects.get(email=request.user)
@@ -211,10 +208,9 @@ def downloadParticipantsList(request):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def setWinners(request):
     try:
-        authentication_classes = [JWTAuthentication]
-        permission_classes = [IsAuthenticated]
         if not OrganisersModel.objects.filter(email=request.user).first():
             return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
         org = OrganisersModel.objects.get(email=request.user)
@@ -256,6 +252,7 @@ def setWinners(request):
             
 
 @api_view(["POST"])
+# @permission_classes([IsAuthenticated])
 def notifyAllParticipants(request):
     try:
         ser = SpecialEmailSerializer(data=request.data)
@@ -270,6 +267,7 @@ def notifyAllParticipants(request):
 
 
 @api_view(["POST"])
+# @permission_classes([IsAuthenticated])
 def notifyAllOrganisers(request):
     try:
         ser = SpecialEmailSerializer(data=request.data)
@@ -284,10 +282,9 @@ def notifyAllOrganisers(request):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def generateParticipationCertificates(request):
     try:
-        authentication_classes = [JWTAuthentication]
-        permission_classes = [IsAuthenticated]
         if not OrganisersModel.objects.filter(email=request.user).first():
             return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
         org = OrganisersModel.objects.get(email=request.user)
@@ -326,10 +323,9 @@ def generateParticipationCertificates(request):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def generateWinnerCertificates(request):
     try:
-        authentication_classes = [JWTAuthentication]
-        permission_classes = [IsAuthenticated]
         if not OrganisersModel.objects.filter(email=request.user).first():
             return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
         org = OrganisersModel.objects.get(email=request.user)
@@ -378,10 +374,9 @@ def generateWinnerCertificates(request):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def attendance(request):
     try:
-        authentication_classes = [JWTAuthentication]
-        permission_classes = [IsAuthenticated]
         if not OrganisersModel.objects.filter(email=request.user).first():
             return Response({"message":"You Dont have rights to perform this action"}, status=status.HTTP_401_UNAUTHORIZED)
         org = OrganisersModel.objects.get(email=request.user)
